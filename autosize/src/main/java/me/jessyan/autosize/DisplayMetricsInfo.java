@@ -29,6 +29,17 @@ import android.util.DisplayMetrics;
  * ================================================
  */
 public class DisplayMetricsInfo implements Parcelable {
+    public static final Creator<DisplayMetricsInfo> CREATOR = new Creator<DisplayMetricsInfo>() {
+        @Override
+        public DisplayMetricsInfo createFromParcel(Parcel source) {
+            return new DisplayMetricsInfo(source);
+        }
+
+        @Override
+        public DisplayMetricsInfo[] newArray(int size) {
+            return new DisplayMetricsInfo[size];
+        }
+    };
     private float density;
     private int densityDpi;
     private float scaledDensity;
@@ -43,13 +54,23 @@ public class DisplayMetricsInfo implements Parcelable {
         this.xdpi = xdpi;
     }
 
-    public DisplayMetricsInfo(float density, int densityDpi, float scaledDensity, float xdpi, int screenWidthDp, int screenHeightDp) {
+    public DisplayMetricsInfo(float density, int densityDpi, float scaledDensity, float xdpi,
+            int screenWidthDp, int screenHeightDp) {
         this.density = density;
         this.densityDpi = densityDpi;
         this.scaledDensity = scaledDensity;
         this.xdpi = xdpi;
         this.screenWidthDp = screenWidthDp;
         this.screenHeightDp = screenHeightDp;
+    }
+
+    protected DisplayMetricsInfo(Parcel in) {
+        this.density = in.readFloat();
+        this.densityDpi = in.readInt();
+        this.scaledDensity = in.readFloat();
+        this.xdpi = in.readFloat();
+        this.screenWidthDp = in.readInt();
+        this.screenHeightDp = in.readInt();
     }
 
     public float getDensity() {
@@ -115,36 +136,10 @@ public class DisplayMetricsInfo implements Parcelable {
         dest.writeInt(this.screenHeightDp);
     }
 
-    protected DisplayMetricsInfo(Parcel in) {
-        this.density = in.readFloat();
-        this.densityDpi = in.readInt();
-        this.scaledDensity = in.readFloat();
-        this.xdpi = in.readFloat();
-        this.screenWidthDp = in.readInt();
-        this.screenHeightDp = in.readInt();
-    }
-
-    public static final Creator<DisplayMetricsInfo> CREATOR = new Creator<DisplayMetricsInfo>() {
-        @Override
-        public DisplayMetricsInfo createFromParcel(Parcel source) {
-            return new DisplayMetricsInfo(source);
-        }
-
-        @Override
-        public DisplayMetricsInfo[] newArray(int size) {
-            return new DisplayMetricsInfo[size];
-        }
-    };
-
     @Override
     public String toString() {
-        return "DisplayMetricsInfo{" +
-                "density=" + density +
-                ", densityDpi=" + densityDpi +
-                ", scaledDensity=" + scaledDensity +
-                ", xdpi=" + xdpi +
-                ", screenWidthDp=" + screenWidthDp +
-                ", screenHeightDp=" + screenHeightDp +
-                '}';
+        return "DisplayMetricsInfo{" + "density=" + density + ", densityDpi=" + densityDpi
+                + ", scaledDensity=" + scaledDensity + ", xdpi=" + xdpi + ", screenWidthDp="
+                + screenWidthDp + ", screenHeightDp=" + screenHeightDp + '}';
     }
 }

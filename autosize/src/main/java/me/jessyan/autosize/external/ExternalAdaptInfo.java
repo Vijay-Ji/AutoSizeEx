@@ -31,6 +31,17 @@ import android.os.Parcelable;
  * ================================================
  */
 public class ExternalAdaptInfo implements Parcelable {
+    public static final Creator<ExternalAdaptInfo> CREATOR = new Creator<ExternalAdaptInfo>() {
+        @Override
+        public ExternalAdaptInfo createFromParcel(Parcel source) {
+            return new ExternalAdaptInfo(source);
+        }
+
+        @Override
+        public ExternalAdaptInfo[] newArray(int size) {
+            return new ExternalAdaptInfo[size];
+        }
+    };
     /**
      * 是否按照宽度进行等比例适配 (为了保证在高宽比不同的屏幕上也能正常适配, 所以只能在宽度和高度之中选一个作为基准进行适配)
      * {@code true} 为按照宽度适配, {@code false} 为按照高度适配
@@ -52,6 +63,11 @@ public class ExternalAdaptInfo implements Parcelable {
     public ExternalAdaptInfo(boolean isBaseOnWidth, float sizeInDp) {
         this.isBaseOnWidth = isBaseOnWidth;
         this.sizeInDp = sizeInDp;
+    }
+
+    protected ExternalAdaptInfo(Parcel in) {
+        this.isBaseOnWidth = in.readByte() != 0;
+        this.sizeInDp = in.readFloat();
     }
 
     public boolean isBaseOnWidth() {
@@ -81,28 +97,9 @@ public class ExternalAdaptInfo implements Parcelable {
         dest.writeFloat(this.sizeInDp);
     }
 
-    protected ExternalAdaptInfo(Parcel in) {
-        this.isBaseOnWidth = in.readByte() != 0;
-        this.sizeInDp = in.readFloat();
-    }
-
-    public static final Creator<ExternalAdaptInfo> CREATOR = new Creator<ExternalAdaptInfo>() {
-        @Override
-        public ExternalAdaptInfo createFromParcel(Parcel source) {
-            return new ExternalAdaptInfo(source);
-        }
-
-        @Override
-        public ExternalAdaptInfo[] newArray(int size) {
-            return new ExternalAdaptInfo[size];
-        }
-    };
-
     @Override
     public String toString() {
-        return "ExternalAdaptInfo{" +
-                "isBaseOnWidth=" + isBaseOnWidth +
-                ", sizeInDp=" + sizeInDp +
-                '}';
+        return "ExternalAdaptInfo{" + "isBaseOnWidth=" + isBaseOnWidth + ", sizeInDp=" + sizeInDp
+                + '}';
     }
 }

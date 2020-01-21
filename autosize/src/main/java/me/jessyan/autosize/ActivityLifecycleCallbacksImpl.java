@@ -24,7 +24,8 @@ import android.support.v4.app.FragmentActivity;
 /**
  * ================================================
  * {@link ActivityLifecycleCallbacksImpl} 可用来代替在 BaseActivity 中加入适配代码的传统方式
- * {@link ActivityLifecycleCallbacksImpl} 这种方案类似于 AOP, 面向接口, 侵入性低, 方便统一管理, 扩展性强, 并且也支持适配三方库的 {@link Activity}
+ * {@link ActivityLifecycleCallbacksImpl} 这种方案类似于 AOP, 面向接口, 侵入性低, 方便统一管理, 扩展性强, 并且也支持适配三方库的
+ * {@link Activity}
  * <p>
  * Created by JessYan on 2018/8/8 14:32
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
@@ -50,11 +51,12 @@ public class ActivityLifecycleCallbacksImpl implements Application.ActivityLifec
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         if (AutoSizeConfig.getInstance().isCustomFragment()) {
             if (activity instanceof FragmentActivity) {
-                ((FragmentActivity) activity).getSupportFragmentManager().registerFragmentLifecycleCallbacks(mFragmentLifecycleCallbacks, true);
+                ((FragmentActivity) activity).getSupportFragmentManager()
+                        .registerFragmentLifecycleCallbacks(mFragmentLifecycleCallbacks, true);
             }
         }
 
-        //Activity 中的 setContentView(View) 一定要在 super.onCreate(Bundle); 之后执行
+        // Activity 中的 setContentView(View) 一定要在 super.onCreate(Bundle); 之后执行
         if (mAutoAdaptStrategy != null) {
             mAutoAdaptStrategy.applyAdapt(activity, activity);
         }
@@ -94,7 +96,6 @@ public class ActivityLifecycleCallbacksImpl implements Application.ActivityLifec
 
     /**
      * 设置屏幕适配逻辑策略类
-     *
      * @param autoAdaptStrategy {@link AutoAdaptStrategy}
      */
     public void setAutoAdaptStrategy(AutoAdaptStrategy autoAdaptStrategy) {

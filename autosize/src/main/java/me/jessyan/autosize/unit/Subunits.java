@@ -34,19 +34,16 @@ public enum Subunits {
     NONE,
     /**
      * 单位 pt
-     *
      * @see android.util.TypedValue#COMPLEX_UNIT_PT
      */
     PT,
     /**
      * 单位 in
-     *
      * @see android.util.TypedValue#COMPLEX_UNIT_IN
      */
     IN,
     /**
      * 单位 mm
-     *
      * @see android.util.TypedValue#COMPLEX_UNIT_MM
      */
     MM

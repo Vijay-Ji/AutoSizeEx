@@ -15,13 +15,13 @@
  */
 package me.jessyan.autosize.external;
 
-import android.app.Activity;
-import android.support.v4.app.Fragment;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import android.app.Activity;
+import android.support.v4.app.Fragment;
 
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.utils.Preconditions;
@@ -31,7 +31,8 @@ import me.jessyan.autosize.utils.Preconditions;
  * 管理三方库的适配信息和状态, 通过 {@link AutoSizeConfig#getExternalAdaptManager()} 获取, 切勿自己 new
  * AndroidAutoSize 通过实现接口的方式来让每个 {@link Activity} 都具有自定义适配参数的功能, 从而让每个 {@link Activity} 都可以自定义适配效果
  * 但通过远程依赖的三方库并不能修改源码, 所以也不能让三方库的 {@link Activity} 实现接口, 实现接口的方式就显得无能为力
- * {@link ExternalAdaptManager} 就是专门用来处理这个问题, 项目初始化时把对应的三方库 {@link Activity} 传入 {@link ExternalAdaptManager} 即可
+ * {@link ExternalAdaptManager} 就是专门用来处理这个问题, 项目初始化时把对应的三方库 {@link Activity} 传入
+ * {@link ExternalAdaptManager} 即可
  * <p>
  * Created by JessYan on 2018/8/10 14:40
  * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
@@ -48,7 +49,6 @@ public class ExternalAdaptManager {
      * <p>
      * 支持链式调用, 如:
      * {@link ExternalAdaptManager#addCancelAdaptOfActivity(Class)#addCancelAdaptOfActivity(Class)}
-     *
      * @param targetClass {@link Activity} class, {@link Fragment} class
      */
     public synchronized ExternalAdaptManager addCancelAdaptOfActivity(Class<?> targetClass) {
@@ -76,12 +76,13 @@ public class ExternalAdaptManager {
      * 但前提是三方库页面的布局使用的是 dp 和 sp, 如果布局全部使用的 px, 那 AndroidAutoSize 也将无能为力
      * <p>
      * 支持链式调用, 如:
-     * {@link ExternalAdaptManager#addExternalAdaptInfoOfActivity(Class, ExternalAdaptInfo)#addExternalAdaptInfoOfActivity(Class, ExternalAdaptInfo)}
-     *
+     * {@link ExternalAdaptManager#addExternalAdaptInfoOfActivity(Class,
+     * ExternalAdaptInfo)#addExternalAdaptInfoOfActivity(Class, ExternalAdaptInfo)}
      * @param targetClass {@link Activity} class, {@link Fragment} class
-     * @param info        {@link ExternalAdaptInfo} 适配参数
+     * @param info {@link ExternalAdaptInfo} 适配参数
      */
-    public synchronized ExternalAdaptManager addExternalAdaptInfoOfActivity(Class<?> targetClass, ExternalAdaptInfo info) {
+    public synchronized ExternalAdaptManager addExternalAdaptInfoOfActivity(Class<?> targetClass,
+            ExternalAdaptInfo info) {
         Preconditions.checkNotNull(targetClass, "targetClass == null");
         if (!isRun) {
             isRun = true;
@@ -95,7 +96,6 @@ public class ExternalAdaptManager {
 
     /**
      * 这个 {@link Activity} 是否存在在取消适配的列表中, 如果在, 则该 {@link Activity} 适配失效
-     *
      * @param targetClass {@link Activity} class, {@link Fragment} class
      * @return {@code true} 为存在, {@code false} 为不存在
      */
@@ -109,7 +109,6 @@ public class ExternalAdaptManager {
 
     /**
      * 这个 {@link Activity} 是否提供有自定义的适配参数, 如果有则使用此适配参数进行适配
-     *
      * @param targetClass {@link Activity} class, {@link Fragment} class
      * @return 如果返回 {@code null} 则说明该 {@link Activity} 没有提供自定义的适配参数
      */
@@ -123,7 +122,6 @@ public class ExternalAdaptManager {
 
     /**
      * 此管理器是否已经启动
-     *
      * @return {@code true} 为已经启动, {@code false} 为没有启动
      */
     public boolean isRun() {
@@ -132,7 +130,6 @@ public class ExternalAdaptManager {
 
     /**
      * 设置管理器的运行状态
-     *
      * @param run {@code true} 为让管理器启动运行, {@code false} 为让管理器停止运行
      */
     public ExternalAdaptManager setRun(boolean run) {

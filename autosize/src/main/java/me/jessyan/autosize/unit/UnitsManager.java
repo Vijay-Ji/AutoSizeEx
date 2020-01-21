@@ -29,8 +29,10 @@ import me.jessyan.autosize.utils.Preconditions;
  * <p>
  * 两个主单位和一个副单位, 可以随时使用下面的方法关闭和重新开启对它们的支持
  * 如果您想完全规避修改 {@link DisplayMetrics#density} 所造成的对于其他使用 dp 布局的系统控件或三方库控件的不良影响
- * 那请调用 {@link #setSupportDP}、{@link #setSupportSP} 都设置为 {@code false}, 停止对两个主单位的支持 (如果开启 sp, 对其他三方库控件影响不大, 也可以不关闭对 sp 的支持)
- * 并调用 {@link #setSupportSubunits} 从三个冷门单位中选择一个作为副单位 (三个单位的效果都是一样的, 按自己的喜好选择, 比如我就喜欢 mm, 翻译为中文是妹妹的意思)
+ * 那请调用 {@link #setSupportDP}、{@link #setSupportSP} 都设置为 {@code false}, 停止对两个主单位的支持 (如果开启 sp,
+ * 对其他三方库控件影响不大, 也可以不关闭对 sp 的支持)
+ * 并调用 {@link #setSupportSubunits} 从三个冷门单位中选择一个作为副单位 (三个单位的效果都是一样的, 按自己的喜好选择, 比如我就喜欢 mm,
+ * 翻译为中文是妹妹的意思)
  * 然后在 layout 文件中只使用这个副单位进行布局, 这样就可以完全规避修改 {@link DisplayMetrics#density} 所造成的问题
  * 因为 dp、sp 这两个单位在其他系统控件或三方库控件中都非常常见, 但三个冷门单位却非常少见
  * <p>
@@ -75,8 +77,7 @@ public class UnitsManager {
 
     /**
      * 设置设计图尺寸
-     *
-     * @param designWidth  设计图上的总宽度, 建议单位为 px
+     * @param designWidth 设计图上的总宽度, 建议单位为 px
      * @param designHeight 设计图上的总高度, 建议单位为 px
      * @return {@link UnitsManager}
      * @see #mDesignWidth 详情请查看这个字段的注释
@@ -90,7 +91,6 @@ public class UnitsManager {
 
     /**
      * 返回 {@link #mDesignWidth}
-     *
      * @return {@link #mDesignWidth}
      */
     public float getDesignWidth() {
@@ -99,7 +99,6 @@ public class UnitsManager {
 
     /**
      * 设置设计图上的总宽度, 建议单位为 px
-     *
      * @param designWidth 设计图上的总宽度, 建议单位为 px
      * @return {@link UnitsManager}
      * @see #mDesignWidth 详情请查看这个字段的注释
@@ -112,7 +111,6 @@ public class UnitsManager {
 
     /**
      * 返回 {@link #mDesignHeight}
-     *
      * @return {@link #mDesignHeight}
      */
     public float getDesignHeight() {
@@ -121,7 +119,6 @@ public class UnitsManager {
 
     /**
      * 设置设计图上的总高度, 建议单位为 px
-     *
      * @param designHeight 设计图上的总高度, 建议单位为 px
      * @return {@link UnitsManager}
      * @see #mDesignHeight 详情请查看这个字段的注释
@@ -134,7 +131,6 @@ public class UnitsManager {
 
     /**
      * 是否支持 dp 单位, 默认支持, 详情请看类文件的注释 {@link UnitsManager}
-     *
      * @return {@code true} 为支持, {@code false} 为不支持
      */
     public boolean isSupportDP() {
@@ -143,7 +139,6 @@ public class UnitsManager {
 
     /**
      * 是否让 AndroidAutoSize 支持 dp 单位, 默认支持, 详情请看类文件的注释 {@link UnitsManager}
-     *
      * @param supportDP {@code true} 为支持, {@code false} 为不支持
      */
     public UnitsManager setSupportDP(boolean supportDP) {
@@ -153,7 +148,6 @@ public class UnitsManager {
 
     /**
      * 是否支持 sp 单位, 默认支持, 详情请看类文件的注释 {@link UnitsManager}
-     *
      * @return {@code true} 为支持, {@code false} 为不支持
      */
     public boolean isSupportSP() {
@@ -162,7 +156,6 @@ public class UnitsManager {
 
     /**
      * 是否让 AndroidAutoSize 支持 sp 单位, 默认支持, 详情请看类文件的注释 {@link UnitsManager}
-     *
      * @param supportSP {@code true} 为支持, {@code false} 为不支持
      */
     public UnitsManager setSupportSP(boolean supportSP) {
@@ -171,8 +164,8 @@ public class UnitsManager {
     }
 
     /**
-     * AndroidAutoSize 以什么单位为副单位, 默认为 {@link Subunits#NONE}, 即不支持副单位, 详情请看类文件的注释 {@link UnitsManager}
-     *
+     * AndroidAutoSize 以什么单位为副单位, 默认为 {@link Subunits#NONE}, 即不支持副单位, 详情请看类文件的注释
+     * {@link UnitsManager}
      * @return {@link Subunits}
      */
     public Subunits getSupportSubunits() {
@@ -180,8 +173,19 @@ public class UnitsManager {
     }
 
     /**
+     * 让 AndroidAutoSize 以什么单位为副单位, 在 pt、in、mm 这三个冷门单位中选择一个即可, 三个效果都是一样的
+     * 按自己的喜好选择, 比如我就喜欢 mm, 翻译为中文是妹妹的意思
+     * 默认为 {@link Subunits#NONE}, 即不支持副单位, 详情请看类文件的注释 {@link UnitsManager}
+     * @param supportSubunits {@link Subunits}
+     */
+    public UnitsManager setSupportSubunits(Subunits supportSubunits) {
+        mSupportSubunits = Preconditions.checkNotNull(supportSubunits,
+                "The supportSubunits can not be null, use Subunits.NONE instead");
+        return this;
+    }
+
+    /**
      * 是否支持 ScreenSizeDp 修改, 默认不支持, 详情请看类文件的注释 {@link UnitsManager}
-     *
      * @return {@code true} 为支持, {@code false} 为不支持
      */
     public boolean isSupportScreenSizeDP() {
@@ -190,24 +194,10 @@ public class UnitsManager {
 
     /**
      * 是否让 AndroidAutoSize 支持 ScreenSizeDp 修改, 默认不支持, 详情请看类文件的注释 {@link UnitsManager}
-     *
      * @param supportScreenSizeDP {@code true} 为支持, {@code false} 为不支持
      */
     public UnitsManager setSupportScreenSizeDP(boolean supportScreenSizeDP) {
         isSupportScreenSizeDP = supportScreenSizeDP;
-        return this;
-    }
-
-    /**
-     * 让 AndroidAutoSize 以什么单位为副单位, 在 pt、in、mm 这三个冷门单位中选择一个即可, 三个效果都是一样的
-     * 按自己的喜好选择, 比如我就喜欢 mm, 翻译为中文是妹妹的意思
-     * 默认为 {@link Subunits#NONE}, 即不支持副单位, 详情请看类文件的注释 {@link UnitsManager}
-     *
-     * @param supportSubunits {@link Subunits}
-     */
-    public UnitsManager setSupportSubunits(Subunits supportSubunits) {
-        mSupportSubunits = Preconditions.checkNotNull(supportSubunits,
-                "The supportSubunits can not be null, use Subunits.NONE instead");
         return this;
     }
 }
