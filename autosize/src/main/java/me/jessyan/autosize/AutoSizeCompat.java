@@ -26,6 +26,7 @@ import android.util.DisplayMetrics;
 import me.jessyan.autosize.external.ExternalAdaptInfo;
 import me.jessyan.autosize.external.ExternalAdaptManager;
 import me.jessyan.autosize.internal.CustomAdapt;
+import me.jessyan.autosize.unit.UnitsManager;
 import me.jessyan.autosize.utils.Preconditions;
 
 /**
@@ -50,12 +51,11 @@ public final class AutoSizeCompat {
      * @param resources {@link Resources}
      */
     public static void autoConvertDensityOfGlobal(Resources resources) {
-        if (AutoSizeConfig.getInstance().isBaseOnWidth()) {
-            autoConvertDensityBaseOnWidth(resources,
-                    AutoSizeConfig.getInstance().getDesignWidthInDp());
+        AutoSizeConfig config = AutoSizeConfig.getInstance();
+        if (config.isBaseOnWidth()) {
+            autoConvertDensityBaseOnWidth(resources, config.getDesignWidthInDp());
         } else {
-            autoConvertDensityBaseOnHeight(resources,
-                    AutoSizeConfig.getInstance().getDesignHeightInDp());
+            autoConvertDensityBaseOnHeight(resources, config.getDesignHeightInDp());
         }
     }
 
@@ -149,24 +149,24 @@ public final class AutoSizeCompat {
      */
     private static void setDensity(Resources resources, float density, int densityDpi,
             float scaledDensity, float xdpi) {
-        // 兼容 MIUI
-        DisplayMetrics activityDisplayMetricsOnMiui = getMetricsOnMiui(resources);
-        DisplayMetrics appDisplayMetricsOnMiui = getMetricsOnMiui(
-                AutoSizeConfig.getInstance().getApplication().getResources());
+        Resources appResources = AutoSizeConfig.getInstance().getApplication().getResources();
 
-        if (activityDisplayMetricsOnMiui != null) {
-            setDensity(activityDisplayMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
+        // 兼容 MIUI
+        DisplayMetrics activityMetricsOnMiui = getMetricsOnMiui(resources);
+        DisplayMetrics appMetricsOnMiui = getMetricsOnMiui(appResources);
+
+        if (activityMetricsOnMiui != null) {
+            AutoSize.setDensity(activityMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
         } else {
-            DisplayMetrics activityDisplayMetrics = resources.getDisplayMetrics();
-            setDensity(activityDisplayMetrics, density, densityDpi, scaledDensity, xdpi);
+            AutoSize.setDensity(resources.getDisplayMetrics(), density, densityDpi, scaledDensity,
+                    xdpi);
         }
 
-        if (appDisplayMetricsOnMiui != null) {
-            setDensity(appDisplayMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
+        if (appMetricsOnMiui != null) {
+            AutoSize.setDensity(appMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
         } else {
-            DisplayMetrics appDisplayMetrics = AutoSizeConfig.getInstance().getApplication()
-                    .getResources().getDisplayMetrics();
-            setDensity(appDisplayMetrics, density, densityDpi, scaledDensity, xdpi);
+            AutoSize.setDensity(appResources.getDisplayMetrics(), density, densityDpi,
+                    scaledDensity, xdpi);
         }
     }
 
@@ -178,14 +178,12 @@ public final class AutoSizeCompat {
      */
     private static void setScreenSizeDp(Resources resources, int screenWidthDp,
             int screenHeightDp) {
-        if (AutoSizeConfig.getInstance().getUnitsManager().isSupportDP()
-                && AutoSizeConfig.getInstance().getUnitsManager().isSupportScreenSizeDP()) {
-            Configuration activityConfiguration = resources.getConfiguration();
-            setScreenSizeDp(activityConfiguration, screenWidthDp, screenHeightDp);
+        UnitsManager unitsManager = AutoSizeConfig.getInstance().getUnitsManager();
+        if (unitsManager.isSupportDP() && unitsManager.isSupportScreenSizeDP()) {
+            setScreenSizeDp(resources.getConfiguration(), screenWidthDp, screenHeightDp);
 
-            Configuration appConfiguration = AutoSizeConfig.getInstance().getApplication()
-                    .getResources().getConfiguration();
-            setScreenSizeDp(appConfiguration, screenWidthDp, screenHeightDp);
+            Resources appResources = AutoSizeConfig.getInstance().getApplication().getResources();
+            setScreenSizeDp(appResources.getConfiguration(), screenWidthDp, screenHeightDp);
         }
     }
 
@@ -197,49 +195,15 @@ public final class AutoSizeCompat {
      * @return {@link DisplayMetrics}, 可能为 {@code null}
      */
     private static DisplayMetrics getMetricsOnMiui(Resources resources) {
-        if (AutoSizeConfig.getInstance().isMiui()
-                && AutoSizeConfig.getInstance().getTmpMetricsField() != null) {
+        AutoSizeConfig config = AutoSizeConfig.getInstance();
+        if (config.isMiui() && config.getTmpMetricsField() != null) {
             try {
-                return (DisplayMetrics) AutoSizeConfig.getInstance().getTmpMetricsField()
-                        .get(resources);
+                return (DisplayMetrics) config.getTmpMetricsField().get(resources);
             } catch (Exception e) {
                 return null;
             }
         }
         return null;
-    }
-
-    /**
-     * 赋值
-     * @param displayMetrics {@link DisplayMetrics}
-     * @param density {@link DisplayMetrics#density}
-     * @param densityDpi {@link DisplayMetrics#densityDpi}
-     * @param scaledDensity {@link DisplayMetrics#scaledDensity}
-     * @param xdpi {@link DisplayMetrics#xdpi}
-     */
-    private static void setDensity(DisplayMetrics displayMetrics, float density, int densityDpi,
-            float scaledDensity, float xdpi) {
-        if (AutoSizeConfig.getInstance().getUnitsManager().isSupportDP()) {
-            displayMetrics.density = density;
-            displayMetrics.densityDpi = densityDpi;
-        }
-        if (AutoSizeConfig.getInstance().getUnitsManager().isSupportSP()) {
-            displayMetrics.scaledDensity = scaledDensity;
-        }
-        switch (AutoSizeConfig.getInstance().getUnitsManager().getSupportSubunits()) {
-        case NONE:
-            break;
-        case PT:
-            displayMetrics.xdpi = xdpi * 72f;
-            break;
-        case IN:
-            displayMetrics.xdpi = xdpi;
-            break;
-        case MM:
-            displayMetrics.xdpi = xdpi * 25.4f;
-            break;
-        default:
-        }
     }
 
     /**
@@ -300,8 +264,9 @@ public final class AutoSizeCompat {
      * @param resources {@link Resources}
      */
     public static void cancelAdapt(Resources resources) {
-        float initXdpi = AutoSizeConfig.getInstance().getInitXdpi();
-        switch (AutoSizeConfig.getInstance().getUnitsManager().getSupportSubunits()) {
+        AutoSizeConfig config = AutoSizeConfig.getInstance();
+        float initXdpi = config.getInitXdpi();
+        switch (config.getUnitsManager().getSupportSubunits()) {
         case PT:
             initXdpi = initXdpi / 72f;
             break;
@@ -310,10 +275,8 @@ public final class AutoSizeCompat {
             break;
         default:
         }
-        setDensity(resources, AutoSizeConfig.getInstance().getInitDensity(),
-                AutoSizeConfig.getInstance().getInitDensityDpi(),
-                AutoSizeConfig.getInstance().getInitScaledDensity(), initXdpi);
-        setScreenSizeDp(resources, AutoSizeConfig.getInstance().getInitScreenWidthDp(),
-                AutoSizeConfig.getInstance().getInitScreenHeightDp());
+        setDensity(resources, config.getInitDensity(), config.getInitDensityDpi(),
+                config.getInitScaledDensity(), initXdpi);
+        setScreenSizeDp(resources, config.getInitScreenWidthDp(), config.getInitScreenHeightDp());
     }
 }

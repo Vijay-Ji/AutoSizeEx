@@ -611,18 +611,15 @@ public final class AutoSizeConfig {
             @Override
             public void run() {
                 PackageManager packageManager = context.getPackageManager();
-                ApplicationInfo applicationInfo;
                 try {
-                    applicationInfo = packageManager.getApplicationInfo(context.getPackageName(),
-                            PackageManager.GET_META_DATA);
-                    if (applicationInfo != null && applicationInfo.metaData != null) {
-                        if (applicationInfo.metaData.containsKey(KEY_DESIGN_WIDTH_IN_DP)) {
-                            mDesignWidthInDp = (int) applicationInfo.metaData
-                                    .get(KEY_DESIGN_WIDTH_IN_DP);
+                    ApplicationInfo info = packageManager.getApplicationInfo(
+                            context.getPackageName(), PackageManager.GET_META_DATA);
+                    if (info != null && info.metaData != null) {
+                        if (info.metaData.containsKey(KEY_DESIGN_WIDTH_IN_DP)) {
+                            mDesignWidthInDp = (int) info.metaData.get(KEY_DESIGN_WIDTH_IN_DP);
                         }
-                        if (applicationInfo.metaData.containsKey(KEY_DESIGN_HEIGHT_IN_DP)) {
-                            mDesignHeightInDp = (int) applicationInfo.metaData
-                                    .get(KEY_DESIGN_HEIGHT_IN_DP);
+                        if (info.metaData.containsKey(KEY_DESIGN_HEIGHT_IN_DP)) {
+                            mDesignHeightInDp = (int) info.metaData.get(KEY_DESIGN_HEIGHT_IN_DP);
                         }
                     }
                 } catch (PackageManager.NameNotFoundException e) {

@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context=".MainActivity">
 
@@ -14,26 +14,44 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_dp_10"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/screen_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center" />
+                android:gravity="center"
+                android:paddingStart="@dimen/dimen_dp_40"
+                android:paddingEnd="@dimen/dimen_dp_40"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/screen_density"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center" />
+                android:gravity="end"
+                android:paddingStart="@dimen/dimen_dp_40"
+                android:paddingEnd="@dimen/dimen_dp_40"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/screen_info_autosize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:paddingStart="@dimen/dimen_dp_40"
+                android:paddingEnd="@dimen/dimen_dp_40"
+                android:textStyle="bold" />
 
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="regainScreenInfo"
                 android:text="重新获取屏幕信息"
-                android:textSize="20sp" />
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- 切换屏幕适配使能状态, 展示当前状态 -->
@@ -43,6 +61,7 @@
             android:layout_height="100dp"
             android:background="@color/colorAccent"
             android:onClick="startOrStop"
+            android:textAllCaps="false"
             android:textColor="#fff"
             android:textSize="30sp" />
 
@@ -52,6 +71,7 @@
             android:background="#fd0"
             android:onClick="goCustomAdaptActivity"
             android:text="CustomAdapt(internal)"
+            android:textAllCaps="false"
             android:textColor="#fff"
             android:textSize="25sp" />
 
@@ -61,6 +81,7 @@
             android:background="#d00"
             android:onClick="goThirdLibraryActivity"
             android:text="CustomAdapt(3rd)"
+            android:textAllCaps="false"
             android:textColor="#fff"
             android:textSize="25sp" />
 
@@ -125,5 +146,25 @@
                 android:textSize="20sp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="@dimen/dimen_dp_180"
+                android:layout_height="@dimen/dimen_dp_180"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                android:src="@mipmap/ic_launcher_new" />
+
+            <ImageView
+                android:layout_width="@dimen/dimen_dp_180"
+                android:layout_height="@dimen/dimen_dp_180"
+                android:contentDescription="@null"
+                android:src="@color/colorAccent"
+                android:onClick="changeImage"
+                android:tag="0"
+                android:scaleType="fitXY" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

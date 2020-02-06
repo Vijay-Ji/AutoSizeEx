@@ -34,6 +34,7 @@
             android:background="#0f3"
             android:onClick="goCustomAdaptFragment"
             android:text="CustomAdapt(Fragment)"
+            android:textAllCaps="false"
             android:textColor="#00f"
             android:textSize="20sp" />
 

@@ -57,7 +57,7 @@ public class BaseApplication extends Application {
         AutoSize.initCompatMultiProcess(this);
 
         // 支持Fragment适配，跟随系统字体大小改变，添加屏幕适配监听
-        AutoSizeConfig.getInstance().setCustomFragment(true).setExcludeFontScale(false)
+        AutoSizeConfig.getInstance().setCustomFragment(true).setExcludeFontScale(true)
                 .setOnAdaptListener(new onAdaptListener() {
                     @Override
                     public void onAdaptBefore(Object target, Activity activity) {

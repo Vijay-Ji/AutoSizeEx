@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -29,11 +30,13 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import cat.ereza.customactivityoncrash.activity.DefaultErrorActivity;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
+import me.jessyan.autosize.AutoSizeCompat;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.internal.CustomAdapt;
 
@@ -56,7 +59,7 @@ import me.jessyan.autosize.internal.CustomAdapt;
 // 实现 CancelAdapt 即可取消当前 Activity 的屏幕适配, 并且这个 Activity 下的所有 Fragment 和 View 都会被取消适配
 // public class MainActivity extends AppCompatActivity implements CancelAdapt {
 public class MainActivity extends AppCompatActivity {
-    private TextView mScreenSizeView, mScreenDensityView;
+    private TextView mScreenSizeView, mScreenDensityView, mScreenInfoAutoSize;
     private Button mBtnStartStopAutoSize;
 
     /**
@@ -88,15 +91,15 @@ public class MainActivity extends AppCompatActivity {
      * @param view {@link View}
      */
     public void startOrStop(View view) {
-        if (AutoSizeConfig.getInstance().isStop()) {
-            AutoSizeConfig.getInstance().restart();
+        AutoSizeConfig config = AutoSizeConfig.getInstance();
+        if (config.isStop()) {
+            config.restart();
         } else {
-            AutoSizeConfig.getInstance().stop(this);
+            config.stop(this);
         }
         updateAutoSizeStatus();
         // AutoSize状态修改 Toast提示
-        String text = !AutoSizeConfig.getInstance().isStop() ? "AutoSize Started"
-                : "AutoSize Stopped";
+        String text = !config.isStop() ? "AutoSize Started" : "AutoSize Stopped";
         Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
     }
 
@@ -104,6 +107,22 @@ public class MainActivity extends AppCompatActivity {
         String text = !AutoSizeConfig.getInstance().isStop() ? "AutoSize Started"
                 : "AutoSize Stopped";
         mBtnStartStopAutoSize.setText(text);
+    }
+
+    /**
+     * 点击view换图，判断当前DisplayMetrics的density
+     * @param view
+     */
+    public void changeImage(View view) {
+        String tag = (String) view.getTag();
+        ImageView imageView = (ImageView) view;
+        if ("0".equals(tag)) {
+            imageView.setImageResource(R.mipmap.ic_launcher_new);
+            imageView.setTag("1");
+        } else {
+            imageView.setImageResource(R.color.colorAccent);
+            imageView.setTag("0");
+        }
     }
 
     public void regainScreenInfo(View view) {
@@ -118,10 +137,22 @@ public class MainActivity extends AppCompatActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         d.getRealMetrics(metrics);
 
-        mScreenSizeView.setText(String.format(Locale.getDefault(), "RealSize: %dx%d",
+        mScreenSizeView.setText(String.format(Locale.getDefault(), "RealSize: %d x %d",
                 metrics.widthPixels, metrics.heightPixels));
         mScreenDensityView.setText(String.format(Locale.getDefault(),
-                "density: %.2f, densityDpi: %d", metrics.density, metrics.densityDpi));
+                "Real: density: %.2f, densityDpi: %d", metrics.density, metrics.densityDpi));
+
+        // 展示已经autosize的屏幕信息
+        DisplayMetrics autosizeMetrics = getResources().getDisplayMetrics();
+        mScreenInfoAutoSize.setText(
+                String.format(Locale.getDefault(), "AutoSize: density: %.2f, densityDpi: %d",
+                        autosizeMetrics.density, autosizeMetrics.densityDpi));
+    }
+
+    @Override
+    public Resources getResources() {
+        AutoSizeCompat.autoConvertDensityOfGlobal((super.getResources()));
+        return super.getResources();
     }
 
     @Override
@@ -131,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
 
         mScreenSizeView = findViewById(R.id.screen_size);
         mScreenDensityView = findViewById(R.id.screen_density);
+        mScreenInfoAutoSize = findViewById(R.id.screen_info_autosize);
+
         mBtnStartStopAutoSize = findViewById(R.id.btn_start_stop);
 
         // 更新屏幕、AutoSize的状态信息

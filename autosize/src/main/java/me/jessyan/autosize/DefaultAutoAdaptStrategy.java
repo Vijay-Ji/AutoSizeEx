@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import me.jessyan.autosize.external.ExternalAdaptInfo;
+import me.jessyan.autosize.external.ExternalAdaptManager;
 import me.jessyan.autosize.internal.CancelAdapt;
 import me.jessyan.autosize.internal.CustomAdapt;
 import me.jessyan.autosize.utils.LogUtils;
@@ -38,20 +39,22 @@ import me.jessyan.autosize.utils.LogUtils;
 public class DefaultAutoAdaptStrategy implements AutoAdaptStrategy {
     @Override
     public void applyAdapt(Object target, Activity activity) {
-        // 检查是否开启了外部三方库的适配模式，只要不主动调用 ExternalAdaptManager 的方法，下面的代码就不会执行
-        if (AutoSizeConfig.getInstance().getExternalAdaptManager().isRun()) {
-            if (AutoSizeConfig.getInstance().getExternalAdaptManager()
-                    .isCancelAdapt(target.getClass())) {
+        // 检查是否开启了三方库的适配模式，只要不主动调用 ExternalAdaptManager 的方法，下面代码不会执行
+        ExternalAdaptManager externalAdaptManager = AutoSizeConfig.getInstance()
+                .getExternalAdaptManager();
+        Class targetClass = target.getClass();
+        if (externalAdaptManager.isRun()) {
+            if (externalAdaptManager.isCancelAdapt(targetClass)) {
                 LogUtils.w(String.format(Locale.ENGLISH, "%s canceled the adaptation!",
-                        target.getClass().getName()));
+                        targetClass.getName()));
                 AutoSize.cancelAdapt(activity);
                 return;
             } else {
-                ExternalAdaptInfo info = AutoSizeConfig.getInstance().getExternalAdaptManager()
-                        .getExternalAdaptInfoOfActivity(target.getClass());
+                ExternalAdaptInfo info = externalAdaptManager
+                        .getExternalAdaptInfoOfActivity(targetClass);
                 if (info != null) {
                     LogUtils.d(String.format(Locale.ENGLISH, "%s used %s for adaptation!",
-                            target.getClass().getName(), ExternalAdaptInfo.class.getName()));
+                            targetClass.getName(), ExternalAdaptInfo.class.getName()));
                     AutoSize.autoConvertDensityOfExternalAdaptInfo(activity, info);
                     return;
                 }
@@ -61,7 +64,7 @@ public class DefaultAutoAdaptStrategy implements AutoAdaptStrategy {
         // 如果 target 实现 CancelAdapt 接口表示放弃适配, 所有的适配效果都将失效
         if (target instanceof CancelAdapt) {
             LogUtils.w(String.format(Locale.ENGLISH, "%s canceled the adaptation!",
-                    target.getClass().getName()));
+                    targetClass.getName()));
             AutoSize.cancelAdapt(activity);
             return;
         }

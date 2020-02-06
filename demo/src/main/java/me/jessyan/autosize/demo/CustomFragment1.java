@@ -47,10 +47,20 @@ public class CustomFragment1 extends Fragment implements CustomAdapt {
         // 所以如果您的 Fragment 允许屏幕旋转, 则请在 onCreateView 手动调用一次 AutoSize.autoConvertDensity()
         // 如果您的 Fragment 不允许屏幕旋转, 则可以将下面调用 AutoSize.autoConvertDensity() 的代码删除掉
         if (!AutoSizeConfig.getInstance().isStop()) {
-            AutoSize.autoConvertDensity(getActivity(), 1080, true);
+            AutoSize.autoConvertDensity(getActivity(), getSizeInDp(), isBaseOnWidth());
         }
         return createTextView(inflater, "Fragment-1\nView width = 360dp\nTotal width = 1080dp",
                 0xffff0000);
+    }
+
+    @Override
+    public float getSizeInDp() {
+        return 1080;
+    }
+
+    @Override
+    public boolean isBaseOnWidth() {
+        return true;
     }
 
     public static View createTextView(LayoutInflater inflater, String content,
@@ -66,15 +76,5 @@ public class CustomFragment1 extends Fragment implements CustomAdapt {
         view.setTextSize(30);
         view.setBackgroundColor(backgroundColor);
         return view;
-    }
-
-    @Override
-    public boolean isBaseOnWidth() {
-        return true;
-    }
-
-    @Override
-    public float getSizeInDp() {
-        return 1080;
     }
 }
