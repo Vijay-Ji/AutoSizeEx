@@ -610,20 +610,22 @@ public final class AutoSizeConfig {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                PackageManager packageManager = context.getPackageManager();
+                ApplicationInfo info = null;
                 try {
-                    ApplicationInfo info = packageManager.getApplicationInfo(
-                            context.getPackageName(), PackageManager.GET_META_DATA);
-                    if (info != null && info.metaData != null) {
-                        if (info.metaData.containsKey(KEY_DESIGN_WIDTH_IN_DP)) {
-                            mDesignWidthInDp = (int) info.metaData.get(KEY_DESIGN_WIDTH_IN_DP);
-                        }
-                        if (info.metaData.containsKey(KEY_DESIGN_HEIGHT_IN_DP)) {
-                            mDesignHeightInDp = (int) info.metaData.get(KEY_DESIGN_HEIGHT_IN_DP);
-                        }
-                    }
+                    info = context.getPackageManager().getApplicationInfo(context.getPackageName(),
+                            PackageManager.GET_META_DATA);
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
+                }
+                if (info == null || info.metaData == null) {
+                    return;
+                }
+
+                if (info.metaData.containsKey(KEY_DESIGN_WIDTH_IN_DP)) {
+                    mDesignWidthInDp = (int) info.metaData.get(KEY_DESIGN_WIDTH_IN_DP);
+                }
+                if (info.metaData.containsKey(KEY_DESIGN_HEIGHT_IN_DP)) {
+                    mDesignHeightInDp = (int) info.metaData.get(KEY_DESIGN_HEIGHT_IN_DP);
                 }
             }
         }).start();

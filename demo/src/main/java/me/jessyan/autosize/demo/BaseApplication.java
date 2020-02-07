@@ -50,14 +50,22 @@ import me.jessyan.autosize.utils.LogUtils;
  * ================================================
  */
 public class BaseApplication extends Application {
+    /**
+     * 取消所有三方库的适配
+     */
+    public static void cancelExternalAdapt() {
+        AutoSizeConfig.getInstance().getExternalAdaptManager()
+                .addCancelAdaptOfActivity(DefaultErrorActivity.class);
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        // 多进程适配，通过启动过ContentProvider
+        // 多进程适配，ContentProvider默认只在主进程创建，非主进程需要执行query等操作才会临时创建
         AutoSize.initCompatMultiProcess(this);
 
         // 支持Fragment适配，跟随系统字体大小改变，添加屏幕适配监听
-        AutoSizeConfig.getInstance().setCustomFragment(true).setExcludeFontScale(true)
+        AutoSizeConfig.getInstance().setCustomFragment(true).setExcludeFontScale(false)
                 .setOnAdaptListener(new onAdaptListener() {
                     @Override
                     public void onAdaptBefore(Object target, Activity activity) {
@@ -93,7 +101,9 @@ public class BaseApplication extends Application {
 
         // 设置屏幕适配逻辑策略类, 一般不用设置, 使用框架默认的就好
         // .setAutoAdaptStrategy(new AutoAdaptStrategy())
-        customAdaptForExternal();
+
+        // 默认适配三方库
+        addExternalAdapt();
     }
 
     /**
@@ -101,13 +111,8 @@ public class BaseApplication extends Application {
      * {@link CustomAdapt} 接口的方式来提供自定义适配参数 (因为远程依赖改不了源码)
      * 所以使用 {@link ExternalAdaptManager} 来替代实现接口的方式, 来提供自定义适配参数
      */
-    public void customAdaptForExternal() {
-        /**
-         * {@link ExternalAdaptManager} 是一个管理外部三方库的适配信息和状态的管理类, 详细介绍请看
-         * {@link ExternalAdaptManager} 的类注释
-         */
+    public void addExternalAdapt() {
         AutoSizeConfig.getInstance().getExternalAdaptManager()
-
                 // 加入的 Activity 将会放弃屏幕适配, 一般用于三方库的 Activity, 详情请看方法注释
                 // 如果不想放弃三方库页面的适配, 请用 addExternalAdaptInfoOfActivity 方法, 建议对三方库页面进行适配, 让自己的
                 // App 更完美一点

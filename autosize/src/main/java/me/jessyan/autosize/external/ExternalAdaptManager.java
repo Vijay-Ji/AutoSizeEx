@@ -45,25 +45,6 @@ public class ExternalAdaptManager {
     private boolean isRun;
 
     /**
-     * 将不需要适配的第三方库 {@link Activity} 添加进来 (但不局限于三方库), 即可让该 {@link Activity} 的适配效果失效
-     * <p>
-     * 支持链式调用, 如:
-     * {@link ExternalAdaptManager#addCancelAdaptOfActivity(Class)#addCancelAdaptOfActivity(Class)}
-     * @param targetClass {@link Activity} class, {@link Fragment} class
-     */
-    public synchronized ExternalAdaptManager addCancelAdaptOfActivity(Class<?> targetClass) {
-        Preconditions.checkNotNull(targetClass, "targetClass == null");
-        if (!isRun) {
-            isRun = true;
-        }
-        if (mCancelAdaptList == null) {
-            mCancelAdaptList = new ArrayList<>();
-        }
-        mCancelAdaptList.add(targetClass.getCanonicalName());
-        return this;
-    }
-
-    /**
      * 将需要提供自定义适配参数的三方库 {@link Activity} 添加进来 (但不局限于三方库), 即可让该 {@link Activity} 根据自己提供的适配参数进行适配
      * 默认的全局适配参数不能满足您时可以使用此方法
      * <p>
@@ -91,6 +72,39 @@ public class ExternalAdaptManager {
             mExternalAdaptInfos = new HashMap<>(16);
         }
         mExternalAdaptInfos.put(targetClass.getCanonicalName(), info);
+        return this;
+    }
+
+    public synchronized void deleteExternalAdaptInfoOfActivity(Class<?> targetClass,
+            ExternalAdaptInfo info) {
+        Preconditions.checkNotNull(targetClass, "targetClass == null");
+
+        String clazzName = targetClass.getCanonicalName();
+        if (mExternalAdaptInfos == null || !mExternalAdaptInfos.containsKey(clazzName)) {
+            return;
+        }
+        mExternalAdaptInfos.remove(targetClass.getCanonicalName());
+
+        // 删除后，需添加到取消适配列表中，用于恢复状态
+        addCancelAdaptOfActivity(targetClass);
+    }
+
+    /**
+     * 将不需要适配的第三方库 {@link Activity} 添加进来 (但不局限于三方库), 即可让该 {@link Activity} 的适配效果失效
+     * <p>
+     * 支持链式调用, 如:
+     * {@link ExternalAdaptManager#addCancelAdaptOfActivity(Class)#addCancelAdaptOfActivity(Class)}
+     * @param targetClass {@link Activity} class, {@link Fragment} class
+     */
+    public synchronized ExternalAdaptManager addCancelAdaptOfActivity(Class<?> targetClass) {
+        Preconditions.checkNotNull(targetClass, "targetClass == null");
+        if (!isRun) {
+            isRun = true;
+        }
+        if (mCancelAdaptList == null) {
+            mCancelAdaptList = new ArrayList<>();
+        }
+        mCancelAdaptList.add(targetClass.getCanonicalName());
         return this;
     }
 

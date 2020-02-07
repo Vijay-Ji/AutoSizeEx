@@ -46,8 +46,8 @@ public class CustomFragment2 extends Fragment implements CustomAdapt {
         if (!AutoSizeConfig.getInstance().isStop()) {
             AutoSize.autoConvertDensity(getActivity(), getSizeInDp(), isBaseOnWidth());
         }
-        return CustomFragment1.createTextView(inflater,
-                "Fragment-2\nView width = 360dp\nTotal width = 720dp", 0xff00ff00);
+        return CustomFragment1.createTextView(inflater, "Fragment-2\nw = 360dp\nTotal = 720dp",
+                0xff00ff00);
     }
 
     @Override

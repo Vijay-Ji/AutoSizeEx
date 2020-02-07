@@ -149,12 +149,8 @@ public final class AutoSizeCompat {
      */
     private static void setDensity(Resources resources, float density, int densityDpi,
             float scaledDensity, float xdpi) {
-        Resources appResources = AutoSizeConfig.getInstance().getApplication().getResources();
-
         // 兼容 MIUI
         DisplayMetrics activityMetricsOnMiui = getMetricsOnMiui(resources);
-        DisplayMetrics appMetricsOnMiui = getMetricsOnMiui(appResources);
-
         if (activityMetricsOnMiui != null) {
             AutoSize.setDensity(activityMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
         } else {
@@ -162,6 +158,9 @@ public final class AutoSizeCompat {
                     xdpi);
         }
 
+        // 兼容 MIUI
+        Resources appResources = AutoSizeConfig.getInstance().getApplication().getResources();
+        DisplayMetrics appMetricsOnMiui = getMetricsOnMiui(appResources);
         if (appMetricsOnMiui != null) {
             AutoSize.setDensity(appMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
         } else {

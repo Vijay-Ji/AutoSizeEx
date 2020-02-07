@@ -171,12 +171,8 @@ public final class AutoSize {
      */
     private static void setDensity(Activity activity, float density, int densityDpi,
             float scaledDensity, float xdpi) {
-        Resources appResources = AutoSizeConfig.getInstance().getApplication().getResources();
-
         // 兼容 MIUI
         DisplayMetrics activityDisplayMetricsOnMiui = getMetricsOnMiui(activity.getResources());
-        DisplayMetrics appDisplayMetricsOnMiui = getMetricsOnMiui(appResources);
-
         if (activityDisplayMetricsOnMiui != null) {
             setDensity(activityDisplayMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
         } else {
@@ -184,6 +180,9 @@ public final class AutoSize {
                     scaledDensity, xdpi);
         }
 
+        // 兼容 MIUI
+        Resources appResources = AutoSizeConfig.getInstance().getApplication().getResources();
+        DisplayMetrics appDisplayMetricsOnMiui = getMetricsOnMiui(appResources);
         if (appDisplayMetricsOnMiui != null) {
             setDensity(appDisplayMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
         } else {
@@ -329,6 +328,7 @@ public final class AutoSize {
             initXdpi = initXdpi / 25.4f;
             break;
         default:
+            break;
         }
         setDensity(activity, config.getInitDensity(), config.getInitDensityDpi(),
                 config.getInitScaledDensity(), initXdpi);
@@ -345,6 +345,32 @@ public final class AutoSize {
         Cursor cursor = null;
         try {
             String uri = "content://" + context.getPackageName() + ".autosize-init-provider";
+            cursor = context.getContentResolver().query(Uri.parse(uri), null, null, null, null);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    public static void startAdapt(Context context) {
+        Cursor cursor = null;
+        try {
+            String uri = "content://" + context.getPackageName() + ".autosize-init-provider/"
+                    + InitProvider.PATH_START;
+            cursor = context.getContentResolver().query(Uri.parse(uri), null, null, null, null);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    public static void stopAdapt(Context context) {
+        Cursor cursor = null;
+        try {
+            String uri = "content://" + context.getPackageName() + ".autosize-init-provider/"
+                    + InitProvider.PATH_STOP;
             cursor = context.getContentResolver().query(Uri.parse(uri), null, null, null, null);
         } finally {
             if (cursor != null) {

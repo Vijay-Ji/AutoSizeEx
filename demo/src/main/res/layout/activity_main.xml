@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context=".MainActivity">
@@ -30,18 +30,14 @@
                 android:id="@+id/screen_density"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:paddingStart="@dimen/dimen_dp_40"
-                android:paddingEnd="@dimen/dimen_dp_40"
+                android:gravity="center"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/screen_info_autosize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="end"
-                android:paddingStart="@dimen/dimen_dp_40"
-                android:paddingEnd="@dimen/dimen_dp_40"
+                android:gravity="center"
                 android:textStyle="bold" />
 
             <Button
@@ -63,7 +59,7 @@
             android:onClick="startOrStop"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
         <Button
             android:layout_width="360dp"
@@ -73,7 +69,7 @@
             android:text="CustomAdapt(internal)"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <Button
             android:layout_width="360dp"
@@ -83,7 +79,7 @@
             android:text="CustomAdapt(3rd)"
             android:textAllCaps="false"
             android:textColor="#fff"
-            android:textSize="25sp" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -161,10 +157,10 @@
                 android:layout_width="@dimen/dimen_dp_180"
                 android:layout_height="@dimen/dimen_dp_180"
                 android:contentDescription="@null"
-                android:src="@color/colorAccent"
                 android:onClick="changeImage"
-                android:tag="0"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                android:src="@color/colorAccent"
+                android:tag="0" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

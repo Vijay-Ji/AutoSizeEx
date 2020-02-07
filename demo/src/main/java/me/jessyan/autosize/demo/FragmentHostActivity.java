@@ -28,7 +28,7 @@ import me.jessyan.autosize.internal.CustomAdapt;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class FragmentHost extends AppCompatActivity implements CustomAdapt {
+public class FragmentHostActivity extends AppCompatActivity implements CustomAdapt {
     @Override
     public boolean isBaseOnWidth() {
         return true;

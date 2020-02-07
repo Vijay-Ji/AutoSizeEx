@@ -49,8 +49,7 @@ public class CustomFragment1 extends Fragment implements CustomAdapt {
         if (!AutoSizeConfig.getInstance().isStop()) {
             AutoSize.autoConvertDensity(getActivity(), getSizeInDp(), isBaseOnWidth());
         }
-        return createTextView(inflater, "Fragment-1\nView width = 360dp\nTotal width = 1080dp",
-                0xffff0000);
+        return createTextView(inflater, "Fragment-1\nw = 360dp\nTotal width = 1080dp", 0xffff0000);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class CustomFragment1 extends Fragment implements CustomAdapt {
         view.setText(content);
         view.setTextColor(0xffffffff);
         view.setGravity(Gravity.CENTER);
-        view.setTextSize(30);
+        view.setTextSize(AutoSizeUtils.sp2px(inflater.getContext(), 20)); // 20dp
         view.setBackgroundColor(backgroundColor);
         return view;
     }

@@ -41,11 +41,11 @@ import me.jessyan.autosize.internal.CustomAdapt;
 public class CustomAdaptActivity extends AppCompatActivity implements CustomAdapt {
 
     /**
-     * 跳转到 {@link FragmentHost}, 展示项目内部的 {@link Fragment} 自定义适配参数的用法
+     * 跳转到 {@link FragmentHostActivity}, 展示项目内部的 {@link Fragment} 自定义适配参数的用法
      * @param view {@link View}
      */
     public void goCustomAdaptFragment(View view) {
-        startActivity(new Intent(getApplicationContext(), FragmentHost.class));
+        startActivity(new Intent(getApplicationContext(), FragmentHostActivity.class));
     }
 
     /**

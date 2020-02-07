@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import cat.ereza.customactivityoncrash.activity.DefaultErrorActivity;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
-import me.jessyan.autosize.AutoSizeCompat;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.internal.CustomAdapt;
 
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 跳转到三方库的 {@link Activity}, 展示项目外部某些三方库的 {@link Activity} 自定义适配参数的用法
-     * 跳转前要先在 {@link BaseApplication#customAdaptForExternal()} 中给外部的三方库 {@link Activity} 自定义适配参数
+     * 跳转前要先在 {@link BaseApplication#addExternalAdapt()} ()} 中给外部的三方库 {@link Activity} 自定义适配参数
      * @param view {@link View}
      */
     public void goThirdLibraryActivity(View view) {
@@ -101,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
         // AutoSize状态修改 Toast提示
         String text = !config.isStop() ? "AutoSize Started" : "AutoSize Stopped";
         Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+
+        // 重绘界面
+        recreate();
     }
 
     private void updateAutoSizeStatus() {
@@ -140,18 +142,18 @@ public class MainActivity extends AppCompatActivity {
         mScreenSizeView.setText(String.format(Locale.getDefault(), "RealSize: %d x %d",
                 metrics.widthPixels, metrics.heightPixels));
         mScreenDensityView.setText(String.format(Locale.getDefault(),
-                "Real: density: %.2f, densityDpi: %d", metrics.density, metrics.densityDpi));
+                "Real: density = %.2f, dpi = %d", metrics.density, metrics.densityDpi));
 
         // 展示已经autosize的屏幕信息
         DisplayMetrics autosizeMetrics = getResources().getDisplayMetrics();
-        mScreenInfoAutoSize.setText(
-                String.format(Locale.getDefault(), "AutoSize: density: %.2f, densityDpi: %d",
+        mScreenInfoAutoSize
+                .setText(String.format(Locale.getDefault(), "AutoSize: density = %.2f, dpi = %d",
                         autosizeMetrics.density, autosizeMetrics.densityDpi));
     }
 
     @Override
     public Resources getResources() {
-        AutoSizeCompat.autoConvertDensityOfGlobal((super.getResources()));
+        // AutoSizeCompat.autoConvertDensityOfGlobal((super.getResources()));
         return super.getResources();
     }
 

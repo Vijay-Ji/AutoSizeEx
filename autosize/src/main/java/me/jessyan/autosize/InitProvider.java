@@ -15,10 +15,11 @@
  */
 package me.jessyan.autosize;
 
-import android.content.Context;
 import android.app.Application;
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -33,21 +34,45 @@ import me.jessyan.autosize.utils.AutoSizeUtils;
  * ================================================
  */
 public class InitProvider extends ContentProvider {
+    /* 取消适配 */
+    public static final String PATH_START = "adapt_start";
+    public static final String PATH_STOP = "adapt_stop";
+    public static final int CODE_START = 1;
+    public static final int CODE_STOP = 2;
+
+    private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
     @Override
     public boolean onCreate() {
-        Context application = getContext().getApplicationContext();
-        if (application == null) {
-            application = AutoSizeUtils.getApplicationByReflect();
+        Context context = getContext();
+        if (context != null) {
+            String authority = "content://" + context.getPackageName() + ".autosize-init-provider";
+            sURIMatcher.addURI(authority, PATH_START, CODE_START);
+            sURIMatcher.addURI(authority, PATH_STOP, CODE_STOP);
+
+            Application application = (Application) context.getApplicationContext();
+            if (application == null) {
+                application = AutoSizeUtils.getApplicationByReflect();
+            }
+            AutoSizeConfig.getInstance().setLog(true).init(application).setUseDeviceSize(false);
         }
-        AutoSizeConfig.getInstance()
-                .setLog(true)
-                .init((Application) application)
-                .setUseDeviceSize(false);
         return true;
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+            String sortOrder) {
+        // Context context = getContext();
+        // if (context != null) {
+        // int match = sURIMatcher.match(uri);
+        // if (CODE_STOP == match) {
+        // // AutoSizeConfig.getInstance().stop();
+        // AutoSizeCompat.cancelAdapt(getContext().getResources());
+        // }
+        // LogUtils.d("InitProvider.query()-code=" + match);
+        // } else {
+        // LogUtils.d("InitProvider.query()-context=null");
+        // }
         return null;
     }
 
