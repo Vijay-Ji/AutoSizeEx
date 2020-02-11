@@ -139,8 +139,10 @@ public class MainActivity extends AppCompatActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         d.getRealMetrics(metrics);
 
-        mScreenSizeView.setText(String.format(Locale.getDefault(), "RealSize: %d x %d",
-                metrics.widthPixels, metrics.heightPixels));
+        mScreenSizeView.setText(String.format(Locale.getDefault(), "Real: %d x %d, %ddp x %ddp",
+                metrics.widthPixels, metrics.heightPixels,
+                (int) (metrics.widthPixels / metrics.density),
+                (int) (metrics.heightPixels / metrics.density)));
         mScreenDensityView.setText(String.format(Locale.getDefault(),
                 "Real: density = %.2f, dpi = %d", metrics.density, metrics.densityDpi));
 
