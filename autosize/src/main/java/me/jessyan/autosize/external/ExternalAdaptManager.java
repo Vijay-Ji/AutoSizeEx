@@ -75,20 +75,6 @@ public class ExternalAdaptManager {
         return this;
     }
 
-    public synchronized void deleteExternalAdaptInfoOfActivity(Class<?> targetClass,
-            ExternalAdaptInfo info) {
-        Preconditions.checkNotNull(targetClass, "targetClass == null");
-
-        String clazzName = targetClass.getCanonicalName();
-        if (mExternalAdaptInfos == null || !mExternalAdaptInfos.containsKey(clazzName)) {
-            return;
-        }
-        mExternalAdaptInfos.remove(targetClass.getCanonicalName());
-
-        // 删除后，需添加到取消适配列表中，用于恢复状态
-        addCancelAdaptOfActivity(targetClass);
-    }
-
     /**
      * 将不需要适配的第三方库 {@link Activity} 添加进来 (但不局限于三方库), 即可让该 {@link Activity} 的适配效果失效
      * <p>

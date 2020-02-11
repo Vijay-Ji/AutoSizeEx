@@ -35,6 +35,12 @@ public class WrapperAutoAdaptStrategy implements AutoAdaptStrategy {
 
     @Override
     public void applyAdapt(Object target, Activity activity) {
+        // stop之后，还原成设备自有参数
+        if (AutoSizeConfig.getInstance().isStop()) {
+            AutoSize.cancelAdapt(activity);
+            return;
+        }
+
         onAdaptListener onAdaptListener = AutoSizeConfig.getInstance().getOnAdaptListener();
         if (onAdaptListener != null) {
             onAdaptListener.onAdaptBefore(target, activity);

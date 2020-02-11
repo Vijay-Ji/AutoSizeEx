@@ -314,7 +314,7 @@ public final class AutoSize {
     }
 
     /**
-     * 取消适配
+     * 取消当前activity的适配
      * @param activity {@link Activity}
      */
     public static void cancelAdapt(Activity activity) {
@@ -345,32 +345,6 @@ public final class AutoSize {
         Cursor cursor = null;
         try {
             String uri = "content://" + context.getPackageName() + ".autosize-init-provider";
-            cursor = context.getContentResolver().query(Uri.parse(uri), null, null, null, null);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
-    public static void startAdapt(Context context) {
-        Cursor cursor = null;
-        try {
-            String uri = "content://" + context.getPackageName() + ".autosize-init-provider/"
-                    + InitProvider.PATH_START;
-            cursor = context.getContentResolver().query(Uri.parse(uri), null, null, null, null);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
-    public static void stopAdapt(Context context) {
-        Cursor cursor = null;
-        try {
-            String uri = "content://" + context.getPackageName() + ".autosize-init-provider/"
-                    + InitProvider.PATH_STOP;
             cursor = context.getContentResolver().query(Uri.parse(uri), null, null, null, null);
         } finally {
             if (cursor != null) {
