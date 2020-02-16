@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import cat.ereza.customactivityoncrash.activity.DefaultErrorActivity;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
-import me.jessyan.autosize.AutoSizeCompat;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.internal.CustomAdapt;
 
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public Resources getResources() {
-        AutoSizeCompat.autoConvertDensityOfGlobal((super.getResources()));
+        // AutoSizeCompat.autoConvertDensityOfGlobal((super.getResources()));
         return super.getResources();
     }
 

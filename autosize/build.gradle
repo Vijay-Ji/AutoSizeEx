@@ -32,7 +32,7 @@ dependencies {
 //apply from: 'bintray.gradle'
 
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.vijay-ji'
+group='com.github.Vijay-Ji' // com.github.<YourUsername>
 
 static def generateVersionCode() {
     def strTime = new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+8"))
