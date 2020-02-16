@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import cat.ereza.customactivityoncrash.activity.DefaultErrorActivity;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
+import me.jessyan.autosize.AutoSizeCompat;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.internal.CustomAdapt;
 
@@ -105,6 +106,14 @@ public class MainActivity extends AppCompatActivity {
         recreate();
     }
 
+    /**
+     * 测试资源文件在适配后的设备能否正常展示，如xxhdpi资源
+     * @param view
+     */
+    public void click2TestResource(View view) {
+        startActivity(new Intent(getApplicationContext(), CustomAdaptResActivity.class));
+    }
+
     private void updateAutoSizeStatus() {
         String text = !AutoSizeConfig.getInstance().isStop() ? "AutoSize Started"
                 : "AutoSize Stopped";
@@ -155,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public Resources getResources() {
-        // AutoSizeCompat.autoConvertDensityOfGlobal((super.getResources()));
+        AutoSizeCompat.autoConvertDensityOfGlobal((super.getResources()));
         return super.getResources();
     }
 
