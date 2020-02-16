@@ -29,7 +29,10 @@ dependencies {
     compileOnly rootProject.appcompat_v7
 }
 
-apply from: 'bintray.gradle'
+//apply from: 'bintray.gradle'
+
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.vijay-ji'
 
 static def generateVersionCode() {
     def strTime = new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+8"))
