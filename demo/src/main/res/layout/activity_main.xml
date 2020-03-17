@@ -150,8 +150,8 @@
                 android:layout_width="@dimen/dimen_dp_180"
                 android:layout_height="@dimen/dimen_dp_180"
                 android:contentDescription="@null"
-                android:scaleType="fitXY"
                 android:onClick="click2TestResource"
+                android:scaleType="fitXY"
                 android:src="@mipmap/ic_launcher_new" />
 
             <ImageView
@@ -163,5 +163,16 @@
                 android:src="@color/colorAccent"
                 android:tag="0" />
         </LinearLayout>
+
+        <!-- 验证一步dialog展示异常测试 -->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#fd0"
+            android:onClick="goStepDialog"
+            android:text="一步Dialog展示异常测试"
+            android:textAllCaps="false"
+            android:textColor="#fff"
+            android:textSize="20sp" />
     </LinearLayout>
 </ScrollView>

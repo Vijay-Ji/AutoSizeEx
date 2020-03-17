@@ -1,0 +1,70 @@
+apply plugin: 'maven'
+
+android {
+    // <group_id> : <artifact_id> : <version>
+    // compile 'com.smartisanos.fwsdk:delta-permission:1.0.0-SNAPSHOT'
+    defaultConfig {
+        VERSION_NAME = rootProject.versionName
+        VERSION_CODE = rootProject.versionCode
+
+        POM_GROUP_ID = 'com.smartisanos.common'
+        POM_ARTIFACT_ID = 'autosize'
+
+        POM_TYPE = 'aar'
+        POM_DESCRIPTION = 'SmartisanCommon AutoSize aar'
+        // POM_ARCHIVES = './build/outputs/aar/autosize-release.aar'
+        MAVEN_URL = 'http://stone-maven.byted.org/repository/maven-releases/'
+        MAVEN_SNAPSHOT_URL = 'http://stone-maven.byted.org/repository/maven-snapshot/'
+    }
+}
+
+//artifacts {
+//    // Seal VPN must be connected in order to upload.
+//    println "$POM_ARCHIVES"
+//    archives file(POM_ARCHIVES)
+//}
+
+uploadArchives {
+    configuration = configurations.archives
+    repositories {
+        mavenDeployer {
+            File propFile = new File('../mavenAccount.properties')
+
+            def repositoryUserName = "admin"
+            def repositoryPassword = "admin"
+            if (propFile.canRead()) {
+                Properties props = new Properties()
+                props.load(new FileInputStream(propFile))
+
+                if (props != null && props.containsKey('repositoryUserName') && props.containsKey('repositoryPassword')) {
+                    repositoryUserName = props['repositoryUserName']
+                    repositoryPassword = props['repositoryPassword']
+                } else {
+                    println 'error: there is no validate username and password'
+                    return
+                }
+            } else {
+                println 'error: can not read prop file'
+                return
+            }
+
+            println repositoryUserName + " password: " + repositoryPassword + " " + VERSION_NAME
+
+            snapshotRepository(url: MAVEN_SNAPSHOT_URL) {
+                authentication(userName: repositoryUserName, password: repositoryPassword)
+            }
+            repository(url: MAVEN_URL) {
+                authentication(userName: repositoryUserName, password: repositoryPassword)
+            }
+
+            pom.project {
+                // version "1.0.7-SNAPSHOT"
+                version VERSION_NAME
+                artifactId POM_ARTIFACT_ID
+                groupId POM_GROUP_ID
+                packaging POM_TYPE
+                description POM_DESCRIPTION
+            }
+        }
+    }
+}

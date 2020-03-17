@@ -15,6 +15,7 @@
  */
 package me.jessyan.autosize.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -59,23 +60,22 @@ public class ScreenUtils {
             }
         }
 
-        int realHeight = getRawScreenSize(context)[1];
+        int realHeight = getRealScreenSize(context)[1];
         int displayHeight = getScreenSize(context)[1];
         return realHeight - displayHeight;
     }
 
     /**
-     * 获取原始的屏幕尺寸
+     * 获取原始的屏幕尺寸, includes window decorations (statusbar bar/menu bar)，默认使用该方法获取宽高
      * @param context {@link Context}
      * @return 屏幕尺寸
      */
-    public static int[] getRawScreenSize(Context context) {
-        int[] size = new int[2];
-
+    public static int[] getRealScreenSize(Context context) {
         WindowManager w = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display d = w.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         d.getMetrics(metrics);
+
         // since SDK_INT = 1;
         int widthPixels = metrics.widthPixels;
         int heightPixels = metrics.heightPixels;
@@ -91,17 +91,12 @@ public class ScreenUtils {
         }
         // includes window decorations (statusbar bar/menu bar)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            try {
-                Point realSize = new Point();
-                Display.class.getMethod("getRealSize", Point.class).invoke(d, realSize);
-                widthPixels = realSize.x;
-                heightPixels = realSize.y;
-            } catch (Exception ignored) {
-            }
+            Point realSize = new Point();
+            d.getRealSize(realSize);
+            widthPixels = realSize.x;
+            heightPixels = realSize.y;
         }
-        size[0] = widthPixels;
-        size[1] = heightPixels;
-        return size;
+        return new int[] { widthPixels, heightPixels };
     }
 
     /**
@@ -110,16 +105,39 @@ public class ScreenUtils {
      * @return 屏幕尺寸
      */
     public static int[] getScreenSize(Context context) {
-        int[] size = new int[2];
+        DisplayMetrics metrics = getDisplayMetrics(context);
+        return new int[] { metrics.widthPixels, metrics.heightPixels };
+    }
 
-        WindowManager w = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    /**
+     * 获取当前屏幕尺寸，不是屏幕的RealSize，获取实际尺寸使用{@link #getRealScreenSize(Context)}
+     * excludes window decorations (statusbar bar/menu bar)
+     * @param context
+     * @return
+     */
+    public static DisplayMetrics getDisplayMetrics(Context context) {
+        WindowManager w = (WindowManager) context.getApplicationContext()
+                .getSystemService(Context.WINDOW_SERVICE);
         Display d = w.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
-        // d.getMetrics(metrics);
-        d.getRealMetrics(metrics);
-
-        size[0] = metrics.widthPixels;
-        size[1] = metrics.heightPixels;
-        return size;
+        d.getMetrics(metrics);
+        return metrics;
     }
+
+    /**
+     * 获取当前屏幕DisplayMetrics，不是RealDisplayMetrics，获取实际尺寸使用{@link #getRealScreenSize(Context)}
+     * excludes window decorations (statusbar bar/menu bar)
+     * @param context
+     * @return
+     */
+    @SuppressLint("NewApi")
+    public static DisplayMetrics getRealDisplayMetrics(Context context) {
+        WindowManager w = (WindowManager) context.getApplicationContext()
+                .getSystemService(Context.WINDOW_SERVICE);
+        Display d = w.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        d.getRealMetrics(metrics);
+        return metrics;
+    }
+
 }

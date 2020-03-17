@@ -8,8 +8,16 @@
         android:id="@+id/image_test_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:contentDescription="@null"
         android:scaleType="center"
+        android:src="@mipmap/ic_launcher_new" />
+
+    <ImageView
+        android:layout_width="@dimen/dimen_w901dp_test_width"
+        android:layout_height="@dimen/dimen_w901dp_test_height"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@null"
+        android:scaleType="fitCenter"
+        android:background="@color/colorPrimary"
         android:src="@mipmap/ic_launcher_new" />
 </LinearLayout>

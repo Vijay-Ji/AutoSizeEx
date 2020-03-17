@@ -38,7 +38,7 @@ import me.jessyan.autosize.internal.CustomAdapt;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
-public class CustomAdaptActivity extends AppCompatActivity implements CustomAdapt {
+public class CustomAdaptActivity extends BaseActivity {
 
     /**
      * 跳转到 {@link FragmentHostActivity}, 展示项目内部的 {@link Fragment} 自定义适配参数的用法

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 横屏（Pad, TNT） > 900 -->
+    <dimen name="dimen_w901dp_test_width">200dp</dimen>
+    <dimen name="dimen_w901dp_test_height">100dp</dimen>
+</resources>

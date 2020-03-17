@@ -151,22 +151,15 @@ public final class AutoSizeCompat {
             float scaledDensity, float xdpi) {
         // 兼容 MIUI
         DisplayMetrics activityMetricsOnMiui = getMetricsOnMiui(resources);
-        if (activityMetricsOnMiui != null) {
-            AutoSize.setDensity(activityMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
-        } else {
-            AutoSize.setDensity(resources.getDisplayMetrics(), density, densityDpi, scaledDensity,
-                    xdpi);
-        }
+        AutoSize.setDensity(activityMetricsOnMiui != null ? activityMetricsOnMiui
+                : resources.getDisplayMetrics(), density, densityDpi, scaledDensity, xdpi);
 
         // 兼容 MIUI
         Resources appResources = AutoSizeConfig.getInstance().getApplication().getResources();
         DisplayMetrics appMetricsOnMiui = getMetricsOnMiui(appResources);
-        if (appMetricsOnMiui != null) {
-            AutoSize.setDensity(appMetricsOnMiui, density, densityDpi, scaledDensity, xdpi);
-        } else {
-            AutoSize.setDensity(appResources.getDisplayMetrics(), density, densityDpi,
-                    scaledDensity, xdpi);
-        }
+        AutoSize.setDensity(
+                appMetricsOnMiui != null ? appMetricsOnMiui : appResources.getDisplayMetrics(),
+                density, densityDpi, scaledDensity, xdpi);
     }
 
     /**
@@ -178,7 +171,7 @@ public final class AutoSizeCompat {
     private static void setScreenSizeDp(Resources resources, int screenWidthDp,
             int screenHeightDp) {
         UnitsManager unitsManager = AutoSizeConfig.getInstance().getUnitsManager();
-        if (unitsManager.isSupportDP() && unitsManager.isSupportScreenSizeDP()) {
+        if (unitsManager.isSupportDp() && unitsManager.isSupportScreenSizeDp()) {
             setScreenSizeDp(resources.getConfiguration(), screenWidthDp, screenHeightDp);
 
             Resources appResources = AutoSizeConfig.getInstance().getApplication().getResources();
@@ -199,7 +192,7 @@ public final class AutoSizeCompat {
             try {
                 return (DisplayMetrics) config.getTmpMetricsField().get(resources);
             } catch (Exception e) {
-                return null;
+                e.printStackTrace();
             }
         }
         return null;
@@ -273,6 +266,7 @@ public final class AutoSizeCompat {
             initXdpi = initXdpi / 25.4f;
             break;
         default:
+            break;
         }
         setDensity(resources, config.getInitDensity(), config.getInitDensityDpi(),
                 config.getInitScaledDensity(), initXdpi);

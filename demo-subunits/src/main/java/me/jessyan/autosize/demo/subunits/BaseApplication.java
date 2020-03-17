@@ -57,7 +57,7 @@ public class BaseApplication extends Application {
      * 副单位是用于规避修改 {@link DisplayMetrics#density} 对其他使用 dp 布局的系统控件或三方库控件造成的不良影响，
      * 您选择什么单位, 就用什么单位在布局文件中布局。两个主单位和一个副单位, 可以随时使用 {@link UnitsManager} 关闭和重启对它们的支持。
      * 如果您想完全规避修改 {@link DisplayMetrics#density} 对其他使用 dp 布局的系统控件或三方库控件造成的不良影响
-     * 那请调用 {@link UnitsManager#setSupportDP}、{@link UnitsManager#setSupportSP}停止对两个主单位的支持 (如果开启 sp,
+     * 那请调用 {@link UnitsManager#setSupportDp}、{@link UnitsManager#setSupportSp}停止对两个主单位的支持 (如果开启 sp,
      * 对其他三方库控件影响不大, 也可不关闭对 sp 的支持)，并调用 {@link UnitsManager#setSupportSubunits} 从三个冷门单位中选择一个作为副单位。
      */
     private void configUnits() {
@@ -67,7 +67,7 @@ public class BaseApplication extends Application {
         // 最后将 dp 全部改为副单位后, 再使用 UnitsManager.setSupportDP(false); 将 dp 的支持关闭, 彻底隔离修改 density
         // 所造成的不良影响
         // 如果项目完全使用副单位, 则可以直接以像素为单位填写 AndroidManifest 中需要填写的设计图尺寸, 不需再把像素转化为 dp
-        AutoSizeConfig.getInstance().getUnitsManager().setSupportDP(false)
+        AutoSizeConfig.getInstance().getUnitsManager().setSupportDp(false)
 
                 // 当使用者想将旧项目从主单位过渡到副单位, 或从副单位过渡到主单位时
                 // 因为在使用主单位时, 建议在 AndroidManifest 中填写设计图的 dp 尺寸, 比如 360 * 640

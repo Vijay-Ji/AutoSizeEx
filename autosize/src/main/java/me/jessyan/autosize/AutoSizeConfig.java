@@ -21,8 +21,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.support.v4.app.Fragment;
@@ -30,6 +28,7 @@ import android.util.DisplayMetrics;
 
 import me.jessyan.autosize.external.ExternalAdaptManager;
 import me.jessyan.autosize.unit.UnitsManager;
+import me.jessyan.autosize.utils.AppUtils;
 import me.jessyan.autosize.utils.LogUtils;
 import me.jessyan.autosize.utils.Preconditions;
 import me.jessyan.autosize.utils.ScreenUtils;
@@ -43,6 +42,7 @@ import me.jessyan.autosize.utils.ScreenUtils;
  * <a href="https://github.com/JessYanCoding">Follow me</a>
  * ================================================
  */
+@SuppressWarnings("ALL")
 public final class AutoSizeConfig {
     private static final String KEY_DESIGN_WIDTH_IN_DP = "design_width_in_dp";
     private static final String KEY_DESIGN_HEIGHT_IN_DP = "design_height_in_dp";
@@ -142,6 +142,11 @@ public final class AutoSizeConfig {
      * 如果为 {@code false}, 则会跟随系统设置中字体大小的改变, 默认为 {@code false}
      */
     private boolean isExcludeFontScale;
+    /**
+     * 可拉伸的屏幕，是否基于设计尺寸拉伸适配
+     */
+    private boolean isResizable;
+
     /**
      * 是否是 Miui 系统
      */
@@ -250,6 +255,10 @@ public final class AutoSizeConfig {
     public AutoSizeConfig setCustomFragment(boolean customFragment) {
         isCustomFragment = customFragment;
         return this;
+    }
+
+    public boolean isResizable() {
+        return isResizable;
     }
 
     /**
@@ -538,55 +547,62 @@ public final class AutoSizeConfig {
                 "AutoSizeConfig#init() can only be called once");
         Preconditions.checkNotNull(application, "application == null");
 
+        // 获取 mDesignWidthInDp、mDesignHeightInDp
+        getMetaData(application);
+
         this.mApplication = application;
         this.isBaseOnWidth = isBaseOnWidth;
-        final DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
-        final Configuration configuration = Resources.getSystem().getConfiguration();
 
-        getMetaData(application);
-        isVertical = application.getResources()
-                .getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-        int[] screenSize = ScreenUtils.getScreenSize(application);
+        int[] screenSize = ScreenUtils.getRealScreenSize(application);
         mScreenWidth = screenSize[0];
         mScreenHeight = screenSize[1];
         mStatusBarHeight = ScreenUtils.getStatusBarHeight();
         LogUtils.d("designWidthInDp = " + mDesignWidthInDp + ", designHeightInDp = "
-                + mDesignHeightInDp + ", screenWidth = " + mScreenWidth + ", screenHeight = "
-                + mScreenHeight);
+                + mDesignHeightInDp + ", width = " + mScreenWidth + ", height = " + mScreenHeight
+                + ", statusBarH = " + mStatusBarHeight);
 
+        final DisplayMetrics displayMetrics = Resources.getSystem().getDisplayMetrics();
         mInitDensity = displayMetrics.density;
         mInitDensityDpi = displayMetrics.densityDpi;
         mInitScaledDensity = displayMetrics.scaledDensity;
         mInitXdpi = displayMetrics.xdpi;
+        LogUtils.d("initDensity = " + mInitDensity + ", initScaledDensity = " + mInitScaledDensity);
+
+        final Configuration configuration = Resources.getSystem().getConfiguration();
+        isVertical = configuration.orientation == Configuration.ORIENTATION_PORTRAIT;
         mInitScreenWidthDp = configuration.screenWidthDp;
         mInitScreenHeightDp = configuration.screenHeightDp;
+
         application.registerComponentCallbacks(new ComponentCallbacks() {
             @Override
             public void onConfigurationChanged(Configuration newConfig) {
-                if (newConfig != null) {
-                    if (newConfig.fontScale > 0) {
-                        mInitScaledDensity = Resources.getSystem()
-                                .getDisplayMetrics().scaledDensity;
-                        LogUtils.d("initScaledDensity = " + mInitScaledDensity
-                                + " on ConfigurationChanged");
-                    }
-                    isVertical = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT;
-                    int[] screenSize = ScreenUtils.getScreenSize(application);
-                    mScreenWidth = screenSize[0];
-                    mScreenHeight = screenSize[1];
+                if (newConfig == null) {
+                    return;
                 }
+
+                if (newConfig.fontScale > 0) {
+                    mInitScaledDensity = displayMetrics.scaledDensity;
+                    LogUtils.d("initScaledDensity = " + mInitScaledDensity
+                            + " on ConfigurationChanged");
+                }
+                isVertical = newConfig.orientation == Configuration.ORIENTATION_PORTRAIT;
+                int[] screenSize = ScreenUtils.getRealScreenSize(application);
+                mScreenWidth = screenSize[0];
+                mScreenHeight = screenSize[1];
+                LogUtils.d("newConfig: vertical = " + isVertical + ", width = " + mScreenWidth
+                        + ", height = " + mScreenHeight);
             }
 
             @Override
             public void onLowMemory() {
-
             }
         });
-        LogUtils.d("initDensity = " + mInitDensity + ", initScaledDensity = " + mInitScaledDensity);
+
         mActivityLifecycleCallbacks = new ActivityLifecycleCallbacksImpl(
                 new WrapperAutoAdaptStrategy(
                         strategy == null ? new DefaultAutoAdaptStrategy() : strategy));
         application.registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
+
         if ("MiuiResources".equals(application.getResources().getClass().getSimpleName())
                 || "XResources".equals(application.getResources().getClass().getSimpleName())) {
             isMiui = true;
@@ -618,22 +634,14 @@ public final class AutoSizeConfig {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ApplicationInfo info = null;
-                try {
-                    info = context.getPackageManager().getApplicationInfo(context.getPackageName(),
-                            PackageManager.GET_META_DATA);
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-                if (info == null || info.metaData == null) {
-                    return;
+                Object widthInDp = AppUtils.getAppMetaData(context, KEY_DESIGN_WIDTH_IN_DP);
+                if (widthInDp != null) {
+                    mDesignWidthInDp = (int) widthInDp;
                 }
 
-                if (info.metaData.containsKey(KEY_DESIGN_WIDTH_IN_DP)) {
-                    mDesignWidthInDp = (int) info.metaData.get(KEY_DESIGN_WIDTH_IN_DP);
-                }
-                if (info.metaData.containsKey(KEY_DESIGN_HEIGHT_IN_DP)) {
-                    mDesignHeightInDp = (int) info.metaData.get(KEY_DESIGN_HEIGHT_IN_DP);
+                Object heightInDp = AppUtils.getAppMetaData(context, KEY_DESIGN_HEIGHT_IN_DP);
+                if (heightInDp != null) {
+                    mDesignHeightInDp = (int) heightInDp;
                 }
             }
         }).start();

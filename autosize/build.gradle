@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply from: 'publish.gradle'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -7,8 +8,10 @@ android {
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode rootProject.versionCode
-        versionName rootProject.versionName
+
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
+
         consumerProguardFiles 'proguard-rules.pro'
     }
 
@@ -29,13 +32,8 @@ dependencies {
     compileOnly rootProject.appcompat_v7
 }
 
-//apply from: 'bintray.gradle'
-
-apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.Vijay-Ji' // com.github.<YourUsername>
-
 static def generateVersionCode() {
-    def strTime = new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+8"))
+    def strTime = new Date().format("yyyyMMddHH", TimeZone.getTimeZone("GMT+8"))
     return Integer.parseInt(strTime)
 }
 
@@ -47,8 +45,16 @@ task deleteMediateJar(type: Delete) {
     }
 }
 
+task deleteOriJar(type: Delete) {
+    delete file('build/intermediates/packaged-classes/release/classes.jar')
+    doLast {
+        // 删除临时文件
+        println('Delete ori jar')
+    }
+}
+
 task copyJar2Mediate(type: Copy, dependsOn: [deleteMediateJar]) {
-    from zipTree('build/intermediates/runtime_library_classes/release/classes.jar')
+    from zipTree('build/intermediates/packaged-classes/release/classes.jar')
     into new File('build/intermediates/others/classes')
     doLast {
         println('Unzip and copy **.jar to \'build/intermediates/others/classes\'')
@@ -57,13 +63,13 @@ task copyJar2Mediate(type: Copy, dependsOn: [deleteMediateJar]) {
 
 // 自动生成autosize的jar
 // 命令：gradlew :autosize:makeJar
-task makeJar(type: Jar, dependsOn: ['assembleRelease', copyJar2Mediate]) {
+task makeJar(type: Jar, dependsOn: [copyJar2Mediate, 'assembleRelease', deleteOriJar]) {
     // 导出的jar文件名称
-    archiveName = 'autosize_' + generateVersionCode() + '.jar'
+    archiveFileName = 'autosize_' + generateVersionCode() + '.jar'
     // 从哪个目录打包jar
     from('build/intermediates/others/classes')
     // 导出的jar文件的存放目录（未指定则默认存放在build/libs下）
-    destinationDir = file('build/libs')
+    destinationDirectory = file('build/libs')
     // 去掉不要的类，
     // exclude('com/android') // jar不含有类路径com.android
     // exclude('com/android/*') // jar含有类路径com.android
@@ -71,6 +77,6 @@ task makeJar(type: Jar, dependsOn: ['assembleRelease', copyJar2Mediate]) {
     // 需要打包的类
     // include('com/**/*.class')
     doLast {
-        println('MakeJar ' + archiveName + ' to \'build/libs\'')
+        println('MakeJar ' + archiveFileName + ' to \'build/libs\'')
     }
 }

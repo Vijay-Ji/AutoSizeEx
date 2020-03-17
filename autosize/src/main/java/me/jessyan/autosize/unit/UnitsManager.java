@@ -29,7 +29,7 @@ import me.jessyan.autosize.utils.Preconditions;
  * <p>
  * 两个主单位和一个副单位, 可以随时使用下面的方法关闭和重新开启对它们的支持
  * 如果您想完全规避修改 {@link DisplayMetrics#density} 所造成的对于其他使用 dp 布局的系统控件或三方库控件的不良影响
- * 那请调用 {@link #setSupportDP}、{@link #setSupportSP} 都设置为 {@code false}, 停止对两个主单位的支持 (如果开启 sp,
+ * 那请调用 {@link #setSupportDp}、{@link #setSupportSp} 都设置为 {@code false}, 停止对两个主单位的支持 (如果开启 sp,
  * 对其他三方库控件影响不大, 也可以不关闭对 sp 的支持)
  * 并调用 {@link #setSupportSubunits} 从三个冷门单位中选择一个作为副单位 (三个单位的效果都是一样的, 按自己的喜好选择, 比如我就喜欢 mm,
  * 翻译为中文是妹妹的意思)
@@ -61,11 +61,11 @@ public class UnitsManager {
     /**
      * 是否支持 dp 单位, 默认支持
      */
-    private boolean isSupportDP = true;
+    private boolean isSupportDp = true;
     /**
      * 是否支持 sp 单位, 默认支持
      */
-    private boolean isSupportSP = true;
+    private boolean isSupportSp = true;
     /**
      * 是否支持副单位, 以什么为副单位? 默认不支持
      */
@@ -73,7 +73,7 @@ public class UnitsManager {
     /**
      * 是否支持 ScreenSizeDp 修改, 默认不支持
      */
-    private boolean isSupportScreenSizeDP = false;
+    private boolean isSupportScreenSizeDp = false;
 
     /**
      * 设置设计图尺寸
@@ -133,16 +133,16 @@ public class UnitsManager {
      * 是否支持 dp 单位, 默认支持, 详情请看类文件的注释 {@link UnitsManager}
      * @return {@code true} 为支持, {@code false} 为不支持
      */
-    public boolean isSupportDP() {
-        return isSupportDP;
+    public boolean isSupportDp() {
+        return isSupportDp;
     }
 
     /**
      * 是否让 AndroidAutoSize 支持 dp 单位, 默认支持, 详情请看类文件的注释 {@link UnitsManager}
-     * @param supportDP {@code true} 为支持, {@code false} 为不支持
+     * @param supportDp {@code true} 为支持, {@code false} 为不支持
      */
-    public UnitsManager setSupportDP(boolean supportDP) {
-        isSupportDP = supportDP;
+    public UnitsManager setSupportDp(boolean supportDp) {
+        isSupportDp = supportDp;
         return this;
     }
 
@@ -150,16 +150,16 @@ public class UnitsManager {
      * 是否支持 sp 单位, 默认支持, 详情请看类文件的注释 {@link UnitsManager}
      * @return {@code true} 为支持, {@code false} 为不支持
      */
-    public boolean isSupportSP() {
-        return isSupportSP;
+    public boolean isSupportSp() {
+        return isSupportSp;
     }
 
     /**
      * 是否让 AndroidAutoSize 支持 sp 单位, 默认支持, 详情请看类文件的注释 {@link UnitsManager}
-     * @param supportSP {@code true} 为支持, {@code false} 为不支持
+     * @param supportSp {@code true} 为支持, {@code false} 为不支持
      */
-    public UnitsManager setSupportSP(boolean supportSP) {
-        isSupportSP = supportSP;
+    public UnitsManager setSupportSp(boolean supportSp) {
+        isSupportSp = supportSp;
         return this;
     }
 
@@ -188,16 +188,16 @@ public class UnitsManager {
      * 是否支持 ScreenSizeDp 修改, 默认不支持, 详情请看类文件的注释 {@link UnitsManager}
      * @return {@code true} 为支持, {@code false} 为不支持
      */
-    public boolean isSupportScreenSizeDP() {
-        return isSupportScreenSizeDP;
+    public boolean isSupportScreenSizeDp() {
+        return isSupportScreenSizeDp;
     }
 
     /**
      * 是否让 AndroidAutoSize 支持 ScreenSizeDp 修改, 默认不支持, 详情请看类文件的注释 {@link UnitsManager}
-     * @param supportScreenSizeDP {@code true} 为支持, {@code false} 为不支持
+     * @param supportScreenSizeDp {@code true} 为支持, {@code false} 为不支持
      */
-    public UnitsManager setSupportScreenSizeDP(boolean supportScreenSizeDP) {
-        isSupportScreenSizeDP = supportScreenSizeDP;
+    public UnitsManager setSupportScreenSizeDp(boolean supportScreenSizeDp) {
+        isSupportScreenSizeDp = supportScreenSizeDp;
         return this;
     }
 }

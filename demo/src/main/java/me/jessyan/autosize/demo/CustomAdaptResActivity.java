@@ -2,16 +2,14 @@ package me.jessyan.autosize.demo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
-import me.jessyan.autosize.internal.CustomAdapt;
 import me.jessyan.autosize.utils.LogUtils;
 
 /**
  * @author jiwenjie
  */
-public class CustomAdaptResActivity extends AppCompatActivity implements CustomAdapt {
+public class CustomAdaptResActivity extends BaseActivity {
 
     private ImageView mImgTestDisplay;
 
@@ -30,15 +28,5 @@ public class CustomAdaptResActivity extends AppCompatActivity implements CustomA
                         + mImgTestDisplay.getWidth() + ", h=" + mImgTestDisplay.getHeight() + ")");
             }
         });
-    }
-
-    @Override
-    public boolean isBaseOnWidth() {
-        return true;
-    }
-
-    @Override
-    public float getSizeInDp() {
-        return 0;
     }
 }

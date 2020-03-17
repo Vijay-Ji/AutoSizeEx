@@ -18,17 +18,16 @@ package me.jessyan.autosize.demo;
 import java.util.Locale;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +37,7 @@ import cat.ereza.customactivityoncrash.activity.DefaultErrorActivity;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
 import me.jessyan.autosize.AutoSizeConfig;
 import me.jessyan.autosize.internal.CustomAdapt;
+import me.jessyan.autosize.utils.ScreenUtils;
 
 /**
  * ================================================<p>
@@ -113,6 +113,27 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), CustomAdaptResActivity.class));
     }
 
+    /**
+     * 验证一步Dialog异常问题
+     * @param view
+     */
+    public void goStepDialog(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("title").setMessage("这是什么一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十一二三四五六七八九十")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create().show();
+    }
+
     private void updateAutoSizeStatus() {
         String text = !AutoSizeConfig.getInstance().isStop() ? "AutoSize Started"
                 : "AutoSize Stopped";
@@ -141,18 +162,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateScreenInfo() {
-        WindowManager w = (WindowManager) getApplicationContext()
-                .getSystemService(Context.WINDOW_SERVICE);
-        Display d = w.getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        d.getRealMetrics(metrics);
+        DisplayMetrics realMetrics = ScreenUtils.getRealDisplayMetrics(this);
+        DisplayMetrics metrics = ScreenUtils.getDisplayMetrics(this);
+        int statusBar = ScreenUtils.getStatusBarHeight();
 
-        mScreenSizeView.setText(String.format(Locale.getDefault(), "Real: %d x %d, %ddp x %ddp",
-                metrics.widthPixels, metrics.heightPixels,
-                (int) (metrics.widthPixels / metrics.density),
-                (int) (metrics.heightPixels / metrics.density)));
+        mScreenSizeView.setText(String.format(Locale.getDefault(),
+                "Part: %d x %d, bar: %d\nReal: %d x %d, %ddp x %ddp", metrics.widthPixels,
+                metrics.heightPixels, statusBar, realMetrics.widthPixels, realMetrics.heightPixels,
+                (int) (realMetrics.widthPixels / realMetrics.density),
+                (int) (realMetrics.heightPixels / realMetrics.density)));
         mScreenDensityView.setText(String.format(Locale.getDefault(),
-                "Real: density = %.2f, dpi = %d", metrics.density, metrics.densityDpi));
+                "Real: density = %.2f, dpi = %d", realMetrics.density, realMetrics.densityDpi));
 
         // 展示已经autosize的屏幕信息
         DisplayMetrics autosizeMetrics = getResources().getDisplayMetrics();

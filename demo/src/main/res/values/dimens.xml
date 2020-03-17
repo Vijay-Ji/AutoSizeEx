@@ -4,4 +4,8 @@
     <dimen name="dimen_dp_40">40dp</dimen>
     <dimen name="dimen_dp_180">180dp</dimen>
     <dimen name="dimen_dp_200">200dp</dimen>
+
+    <dimen name="dimen_w901dp_test_width">100dp</dimen>
+    <dimen name="dimen_w901dp_test_height">200dp</dimen>
+
 </resources>

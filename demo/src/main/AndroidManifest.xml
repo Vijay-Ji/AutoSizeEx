@@ -13,24 +13,47 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- 是否支持拉伸适配标志位 -->
+            <meta-data
+                android:name="autosize_intrinsic"
+                android:value="true" />
+            <!-- 大屏参数 -->
+            <!-- 0,1(landscape),5(可任意拉伸、支持全屏),-1,900,614 -->
+            <meta-data
+                android:name="windowParams"
+                android:value="0,1,5,-1,900,614" />
         </activity>
         <activity android:name=".CustomAdaptActivity" />
         <activity android:name=".FragmentHostActivity" />
         <activity android:name=".CustomAdaptResActivity" />
 
+        <!-- 大屏应用适配参数(TNT...) 参考：https://bytedance.feishu.cn/docs/doccnhSFwUzyrNDaT08bVDXTLxc?new_source=message# -->
+        <!-- "version,windowMode,resizeMode,forceResizeMode,width,height,minWidth,minHeight" -->
+        <!-- 0,0(portrait),0(不能拉伸),-1,360,614 ==> 竖屏，360*640(dp) -->
+        <meta-data
+            android:name="windowParams"
+            android:value="0,0,0,-1,360,614" />
+
+        <!-- AutoSize -->
         <!-- 如果您项目中的所有页面都只需要以高或宽中的一个作为基准进行适配的话, 那就只需要填写高或宽中的一个设计图尺寸即可 -->
         <meta-data
             android:name="design_width_in_dp"
-            android:value="360" />
+            android:value="432" />
         <meta-data
             android:name="design_height_in_dp"
-            android:value="640" />
+            android:value="900" />
+        <!-- 针对便签这类应用，拉伸时，屏幕适配不随拉伸调整。autosize_intrinsic可作用于application和activity -->
+        <meta-data
+            android:name="autosize_intrinsic"
+            android:value="true" />
 
     </application>
 
